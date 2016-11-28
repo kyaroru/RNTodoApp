@@ -4,8 +4,6 @@ import {
   StyleSheet,
   View,
   ActivityIndicator,
-  Text,
-  ListView,
 } from 'react-native';
 import NavigationHeader from '../common/NavigationHeader';
 import TodoListItem from '../common/TodoListItem';
@@ -13,26 +11,30 @@ import Divider from '../common/Divider';
 import * as ducks from './ducks';
 import { connect } from 'react-redux';
 import isEmpty from 'lodash/isEmpty';
+import { Field, reduxForm, formValueSelector, change } from 'redux-form';
+import TextField from '../common/TextField';
 
 type Props = {
   fetchTodosRequest: Function,
   todos: Object,
-  isFetching: Boolean,
+  isFetching: bool,
   toggleTodoItem: Function,
   deleteTodoItem: Function,
+  addTodoItem: Function,
+  updateFormData: Function,
+  formData: Object,
 };
+
+const selector = formValueSelector('todoForm');
 
 class TodoList extends Component {
   props : Props;
 
   constructor(props) {
     super(props);
-    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
       shouldShowDeleteButton: false,
-      dataSource: ds,
     };
-    this.renderRow = this.renderRow.bind(this);
   }
 
   componentDidMount() {
@@ -43,10 +45,6 @@ class TodoList extends Component {
     this.props.toggleTodoItem(item);
   }
 
-  onAddItemPressed() {
-    console.log('add item');
-  }
-
   onDeletePressed() {
     this.setState({ shouldShowDeleteButton: !this.state.shouldShowDeleteButton });
   }
@@ -55,19 +53,23 @@ class TodoList extends Component {
     this.props.deleteTodoItem(item);
   }
 
-  genRow() {
-    return this.props.todos || {};
+  onTextEndEditing() {
+    const { formData } = this.props;
+    if (formData.todoValue) {
+      this.props.addTodoItem(formData.todoValue);
+      this.updateFormDataByName('todoValue', '');
+    }
   }
 
-  renderRow(item) {
-    return (
-      <TodoListItem title={item.title} isChecked={item.isChecked} onItemPressed={() => this.onItemPressed(item)} />
-    );
+  updateFormDataByName(name, value) {
+    this.props.updateFormData('todoForm', name, value);
   }
 
-  renderSeparator(sectionID: number, rowID: number) {
+  renderForm() {
     return (
-      <Divider key={`${sectionID}-${rowID}`} />
+      <View>
+        <Field name="todoValue" component={TextField} placeholder="Enter new todo here" secureTextEntry={false} editable onEndEditing={(event) => this.onTextEndEditing(event)} onInputBlur={(name) => this.updateFormDataByName(name, '')} />
+      </View>
     );
   }
 
@@ -81,23 +83,15 @@ class TodoList extends Component {
           style={styles.centering}
           size="large"
         />
-        <NavigationHeader title="TodoApp" leftIcon="add" onLeftIconPressed={() => this.onAddItemPressed()} rightIcon="delete-sweep" onRightIconPressed={() => this.onDeletePressed()} />
+        <NavigationHeader title="TodoApp" rightIcon="delete-sweep" onRightIconPressed={() => this.onDeletePressed()} />
         <View style={styles.listContainer}>
-          {<ListView
-            enableEmptySections
-            dataSource={this.state.dataSource.cloneWithRows(this.genRow())}
-            renderRow={this.renderRow}
-            renderSeparator={this.renderSeparator}
-          />}
-          {/* !isEmpty(todos) && Object.keys(todos).map((key) =>
+          {!isEmpty(todos) && Object.keys(todos).map((key) =>
             <View key={key}>
               <TodoListItem title={todos[key].title} isChecked={todos[key].isChecked} onItemPressed={() => this.onItemPressed(todos[key])} shouldShowDeleteButton={this.state.shouldShowDeleteButton} onDeleteItemPressed={() => this.onDeleteItemPressed(todos[key])} />
               <Divider />
             </View>
-          ) */}
-          {isEmpty(this.props.todos) && <View style={styles.emptyItem}>
-            <Text>Press the icon on the left to add your first todo now :p</Text>
-          </View>}
+          )}
+          {this.renderForm()}
         </View>
       </View>
     );
@@ -134,12 +128,19 @@ const styles = StyleSheet.create({
 const mapStateToProps = (store) => ({
   isFetching: store[ducks.NAME].todoIsFetching,
   todos: store[ducks.NAME].todoList,
+  formData: selector(store, 'todoValue', 'anotherInput'),
 });
 
 const mapDispatchToProps = {
   fetchTodosRequest: ducks.fetchTodosRequest,
+  addTodoItem: ducks.addTodoItem,
   toggleTodoItem: ducks.toggleTodoItem,
   deleteTodoItem: ducks.deleteTodoItem,
+  updateFormData: change,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TodoList);
+const TodoPage = connect(mapStateToProps, mapDispatchToProps)(reduxForm({
+  form: 'todoForm',
+})(TodoList));
+
+export default TodoPage;

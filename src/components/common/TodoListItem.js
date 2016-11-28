@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
   },
   title: {
     paddingLeft: 10,
+    fontSize: 12,
   },
   deleteIcon: {
     position: 'absolute',

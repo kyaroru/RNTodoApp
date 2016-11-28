@@ -18,10 +18,10 @@ export const toggleTodoItem = (todo) => ({
   todo,
 });
 
-export const UPDATE_TODO_ITEM = `${NAME}/UPDATE_TODO_ITEM`;
-export const updateTodoItem = (todo) => ({
-  type: UPDATE_TODO_ITEM,
-  todo,
+export const ADD_TODO_ITEM = `${NAME}/ADD_TODO_ITEM`;
+export const addTodoItem = (text) => ({
+  type: ADD_TODO_ITEM,
+  text,
 });
 
 export const DELETE_TODO_ITEM = `${NAME}/DELETE_TODO_ITEM`;

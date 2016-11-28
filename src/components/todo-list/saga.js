@@ -12,20 +12,8 @@ function* watchTodosFetch() {
   yield* takeLatest(ducks.FETCH_TODOS_REQUEST, fetchTodos);
 }
 
-function* toggleTodo({ todo }) {
-  const newTodo = Object.assign(todo, {
-    isChecked: !todo.isChecked,
-  });
-  yield put(ducks.updateTodoItem(newTodo));
-}
-
-function* watchToggleTodo() {
-  yield* takeLatest(ducks.TOGGLE_TODO_ITEM, toggleTodo);
-}
-
 export default function* todoSaga() {
   yield [
     fork(watchTodosFetch),
-    fork(watchToggleTodo),
   ];
 }

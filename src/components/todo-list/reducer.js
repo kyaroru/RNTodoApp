@@ -1,5 +1,6 @@
 import * as ducks from './ducks';
 import { combineReducers } from 'redux';
+import isEmpty from 'lodash/isEmpty';
 
 const todoIsFetching = (state = false, action) => {
   switch (action.type) {
@@ -7,17 +8,6 @@ const todoIsFetching = (state = false, action) => {
       return true;
     case ducks.FETCH_TODOS_SUCCESS:
       return false;
-    default:
-      return state;
-  }
-};
-
-const toDoById = (state = [], action) => {
-  switch (action.type) {
-    case ducks.FETCH_TODOS_SUCCESS:
-      return action.todos.map(todo => todo.id);
-    case ducks.DELETE_TODO_ITEM:
-      return state.filter(id => id !== action.todo.id);
     default:
       return state;
   }
@@ -41,10 +31,26 @@ const todoList = (state = {}, action) => {
         obj[todo.id] = todo;
         return obj;
       }, {});
-    case ducks.UPDATE_TODO_ITEM: {
-      return Object.assign(state, {
-        [action.todo.id]: action.todo,
-      });
+    case ducks.TOGGLE_TODO_ITEM: {
+      return {
+        ...state,
+        [action.todo.id]: {
+          ...state[action.todo.id],
+          isChecked: !action.todo.isChecked,
+        },
+      };
+    }
+    case ducks.ADD_TODO_ITEM: {
+      const lastId = isEmpty(state) ? 0 : Object.keys(state)[Object.keys(state).length - 1];
+      const newId = isEmpty(state) ? 1 : state[lastId].id + 1;
+      return {
+        ...state,
+        [newId]: {
+          id: newId,
+          title: action.text,
+          isChecked: false,
+        },
+      };
     }
     case ducks.DELETE_TODO_ITEM: {
       const newTodoList = Object.assign({}, state);
