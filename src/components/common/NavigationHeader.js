@@ -10,11 +10,11 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {
-  title: String,
-  rightIcon: String,
-  leftIcon: String,
-  onRightIconPressed: Function,
-  onLeftIconPressed: Function,
+  title: string,
+  rightIcon?: string,
+  leftIcon?: string,
+  onRightIconPressed?: Function,
+  onLeftIconPressed?: Function,
 };
 
 export default class NavigationHeader extends Component {

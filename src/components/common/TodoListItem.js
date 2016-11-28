@@ -8,11 +8,11 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {
-  title: String,
-  isChecked: Boolean,
+  title: string,
+  isChecked: boolean,
   onItemPressed: Function,
   onDeleteItemPressed: Function,
-  shouldShowDeleteButton: Boolean,
+  shouldShowDeleteButton: boolean,
 };
 
 export default class TodoListItem extends Component {
