@@ -23,21 +23,9 @@ function* watchToggleTodo() {
   yield* takeLatest(ducks.TOGGLE_TODO_ITEM, toggleTodo);
 }
 
-// function* deleteTodoItem({ todo }) {
-//   const newTodo = Object.assign(todo, {
-//     isChecked: !todo.isChecked,
-//   });
-//   yield put(ducks.deleteTo(newTodo));
-// }
-//
-// function* watchDeleteTodo() {
-//   yield* takeLatest(ducks.DELETE_TODO_ITEM, deleteTodoItem);
-// }
-
 export default function* todoSaga() {
   yield [
     fork(watchTodosFetch),
     fork(watchToggleTodo),
-    // fork(watchDeleteTodo),
   ];
 }
