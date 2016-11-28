@@ -5,6 +5,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -42,10 +43,10 @@ export default class NavigationHeader extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    height: 65,
+    height: Platform.OS === 'ios' ? 65 : 44,
   },
   statusBar: {
-    height: 21,
+    height: Platform.OS === 'ios' ? 21 : 0,
     backgroundColor: 'rgb(9, 142, 206)',
   },
   navBar: {
