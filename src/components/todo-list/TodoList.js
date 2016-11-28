@@ -5,7 +5,7 @@ import {
   View,
   ActivityIndicator,
   Text,
-  // ListView,
+  ListView,
 } from 'react-native';
 import NavigationHeader from '../common/NavigationHeader';
 import TodoListItem from '../common/TodoListItem';
@@ -16,7 +16,7 @@ import isEmpty from 'lodash/isEmpty';
 
 type Props = {
   fetchTodosRequest: Function,
-  todos: Array<any>,
+  todos: Object,
   isFetching: Boolean,
   toggleTodoItem: Function,
   deleteTodoItem: Function,
@@ -27,12 +27,12 @@ class TodoList extends Component {
 
   constructor(props) {
     super(props);
-    // const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
       shouldShowDeleteButton: false,
-      // dataSource: ds,
+      dataSource: ds,
     };
-    // this.renderRow = this.renderRow.bind(this);
+    this.renderRow = this.renderRow.bind(this);
   }
 
   componentDidMount() {
@@ -55,15 +55,15 @@ class TodoList extends Component {
     this.props.deleteTodoItem(item);
   }
 
-  // genRow() {
-  //   return this.props.todos || [];
-  // }
+  genRow() {
+    return this.props.todos || {};
+  }
 
-  // renderRow(item) {
-  //   return (
-  //     <TodoListItem title={item.title} isChecked={item.isChecked} onItemPressed={() => this.onItemPressed(item)} />
-  //   );
-  // }
+  renderRow(item) {
+    return (
+      <TodoListItem title={item.title} isChecked={item.isChecked} onItemPressed={() => this.onItemPressed(item)} />
+    );
+  }
 
   renderSeparator(sectionID: number, rowID: number) {
     return (
@@ -72,7 +72,7 @@ class TodoList extends Component {
   }
 
   render() {
-    const { isFetching } = this.props;
+    const { isFetching, todos } = this.props;
 
     return (
       <View style={styles.container}>
@@ -83,18 +83,18 @@ class TodoList extends Component {
         />
         <NavigationHeader title="TodoApp" leftIcon="add" onLeftIconPressed={() => this.onAddItemPressed()} rightIcon="delete-sweep" onRightIconPressed={() => this.onDeletePressed()} />
         <View style={styles.listContainer}>
-          {/* <ListView
+          {<ListView
             enableEmptySections
             dataSource={this.state.dataSource.cloneWithRows(this.genRow())}
             renderRow={this.renderRow}
             renderSeparator={this.renderSeparator}
-          /> */}
-          {this.props.todos && this.props.todos.map((item) =>
-            <View key={item.id}>
-              <TodoListItem title={item.title} isChecked={item.isChecked} onItemPressed={() => this.onItemPressed(item)} shouldShowDeleteButton={this.state.shouldShowDeleteButton} onDeleteItemPressed={() => this.onDeleteItemPressed(item)} />
+          />}
+          {/* !isEmpty(todos) && Object.keys(todos).map((key) =>
+            <View key={key}>
+              <TodoListItem title={todos[key].title} isChecked={todos[key].isChecked} onItemPressed={() => this.onItemPressed(todos[key])} shouldShowDeleteButton={this.state.shouldShowDeleteButton} onDeleteItemPressed={() => this.onDeleteItemPressed(todos[key])} />
               <Divider />
             </View>
-          )}
+          ) */}
           {isEmpty(this.props.todos) && <View style={styles.emptyItem}>
             <Text>Press the icon on the left to add your first todo now :p</Text>
           </View>}
