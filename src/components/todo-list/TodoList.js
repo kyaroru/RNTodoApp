@@ -41,6 +41,7 @@ class TodoList extends Component {
     };
     this.onInputFocus = this.onInputFocus.bind(this);
     this.onTextEndEditing = this.onTextEndEditing.bind(this);
+    this.onBlur = this.onBlur.bind(this);
   }
 
   componentDidMount() {
@@ -67,8 +68,8 @@ class TodoList extends Component {
     }
   }
 
-  updateFormDataByName(name, value) {
-    this.props.updateFormData('todoForm', name, value);
+  onBlur(name) {
+    this.updateFormDataByName(name, '');
   }
 
   onInputFocus(model) {
@@ -84,10 +85,14 @@ class TodoList extends Component {
     }
   }
 
+  updateFormDataByName(name, value) {
+    this.props.updateFormData('todoForm', name, value);
+  }
+
   renderForm() {
     return (
       <View>
-        <Field name="todoValue" component={TextField} placeholder="Enter new todo here" secureTextEntry={false} editable onTextEndEditing={this.onTextEndEditing} onInputBlur={(name) => this.updateFormDataByName(name, '')} onInputFocus={this.onInputFocus} />
+        <Field name="todoValue" component={TextField} placeholder="Enter new todo here" secureTextEntry={false} editable onTextEndEditing={this.onTextEndEditing} onBlur={this.onBlur} onInputFocus={this.onInputFocus} />
       </View>
     );
   }

@@ -13,7 +13,7 @@ type Props = {
   input: Object,
   name: String,
   meta: Object,
-  onInputBlur: Function,
+  onBlur: Function,
   onInputFocus: Function,
   onTextEndEditing: Function,
 }
@@ -30,8 +30,10 @@ class TextField extends Component {
   }
 
   blurInput(name) {
+    const { onBlur } = this.props;
     if (this.refs[name]) {
-      this.props.onInputBlur(name);
+      onBlur(name);
+      this.setState({ isFocused: false });
       this.refs[name].blur();
     }
   }
@@ -42,21 +44,11 @@ class TextField extends Component {
     }
   }
 
-  onKeyPress(event, name) {
-    const { onTextEndEditing } = this.props;
-    console.log('onKeyPress key: ' + event.nativeEvent.key);
-    if (Platform.OS === 'android') {
-      if (event.nativeEvent.key === 'Enter') {
-        onTextEndEditing(name);
-      }
-    }
-  }
-
   render() {
     const { input: { onChange, value }, name, onInputFocus, onTextEndEditing } = this.props;
     return (
       <View>
-        <TouchableOpacity style={styles.row} onPress={() => this.focusInput(name)}>
+        <View style={styles.row} onPress={() => this.focusInput(name)} >
           <Icon name="check-box-outline-blank" size={25} color="rgb(9, 142, 206)" />
           <TextInput
             ref={name}
@@ -66,18 +58,16 @@ class TextField extends Component {
               this.setState({ isFocused: true });
               onInputFocus(this);
             }}
-            onSubmitEditing={() => onTextEndEditing(name)}
-            onBlur={() => this.setState({ isFocused: false })}
             onChangeText={(text) => onChange(text)}
             underlineColorAndroid="transparent"
             placeholderTextColor="#aaa"
-            onEndEditing={() => onTextEndEditing(name)}
+            onSubmitEditing={() => onTextEndEditing(name)}
             {...this.props}
           />
           {this.state.isFocused && <TouchableOpacity style={styles.cancelIcon} onPress={() => this.blurInput(name)}>
             <Icon name="cancel" size={25} color="#777" />
           </TouchableOpacity>}
-        </TouchableOpacity>
+        </View>
 
         <Divider />
       </View>
