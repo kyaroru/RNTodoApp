@@ -6,6 +6,7 @@ import ReactNative, {
   ScrollView,
   ActivityIndicator,
   Platform,
+  StatusBar,
 } from 'react-native';
 import NavigationHeader from '../common/NavigationHeader';
 import TodoListItem from '../common/TodoListItem';
@@ -96,6 +97,10 @@ class TodoList extends Component {
 
     return (
       <View style={styles.container}>
+        <StatusBar
+          backgroundColor={'rgb(9, 142, 206)'}
+          barStyle="light-content"
+        />
         <ActivityIndicator
           animating={!!isFetching}
           style={styles.centering}
