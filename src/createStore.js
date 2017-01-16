@@ -2,9 +2,7 @@ import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import createLogger from 'redux-logger';
 import mySaga from './sagas';
-import './ReactotronConfig';
 
-const createStores = __DEV__ ? console.tron.createStore : createStore; 
 const sagaMiddleware = createSagaMiddleware();
 let middleware;
 
@@ -16,8 +14,7 @@ if (__DEV__) {
 }
 
 export default (reducers, data = {}) => {
-  // const store = Reactotron.createStore(reducers, data, middleware);
-  const store = createStores(reducers, data, middleware);
+  const store = createStore(reducers, data, middleware);
   sagaMiddleware.run(mySaga);
   return store;
 };
