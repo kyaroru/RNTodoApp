@@ -1,9 +1,11 @@
 // @flow
 import React, { Component } from 'react';
-import {
+import ReactNative, {
   StyleSheet,
   View,
+  ScrollView,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import NavigationHeader from '../common/NavigationHeader';
 import TodoListItem from '../common/TodoListItem';
@@ -13,6 +15,7 @@ import { connect } from 'react-redux';
 import isEmpty from 'lodash/isEmpty';
 import { Field, reduxForm, formValueSelector, change } from 'redux-form';
 import TextField from '../common/TextField';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 type Props = {
   fetchTodosRequest: Function,
@@ -35,6 +38,8 @@ class TodoList extends Component {
     this.state = {
       shouldShowDeleteButton: false,
     };
+    this.onInputFocus = this.onInputFocus.bind(this);
+    this.onTextEndEditing = this.onTextEndEditing.bind(this);
   }
 
   componentDidMount() {
@@ -53,11 +58,11 @@ class TodoList extends Component {
     this.props.deleteTodoItem(item);
   }
 
-  onTextEndEditing() {
+  onTextEndEditing(model) {
     const { formData } = this.props;
-    if (formData.todoValue) {
-      this.props.addTodoItem(formData.todoValue);
-      this.updateFormDataByName('todoValue', '');
+    if (formData[model]) {
+      this.props.addTodoItem(formData[model]);
+      this.updateFormDataByName(model, '');
     }
   }
 
@@ -65,10 +70,23 @@ class TodoList extends Component {
     this.props.updateFormData('todoForm', name, value);
   }
 
+  onInputFocus(model) {
+    if (Platform.OS === 'ios') {
+      setTimeout(() => {
+        const scrollResponder = this.refs.scrollView.getScrollResponder();
+        scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
+          ReactNative.findNodeHandle(model),
+          65,
+          true
+        );
+      }, 100);
+    }
+  }
+
   renderForm() {
     return (
       <View>
-        <Field name="todoValue" component={TextField} placeholder="Enter new todo here" secureTextEntry={false} editable onEndEditing={(event) => this.onTextEndEditing(event)} onInputBlur={(name) => this.updateFormDataByName(name, '')} />
+        <Field name="todoValue" component={TextField} placeholder="Enter new todo here" secureTextEntry={false} editable onTextEndEditing={this.onTextEndEditing} onInputBlur={(name) => this.updateFormDataByName(name, '')} onInputFocus={this.onInputFocus} />
       </View>
     );
   }
@@ -84,15 +102,18 @@ class TodoList extends Component {
           size="large"
         />
         <NavigationHeader title="TodoApp" rightIcon="delete-sweep" onRightIconPressed={() => this.onDeletePressed()} />
-        <View style={styles.listContainer}>
-          {!isEmpty(todos) && Object.keys(todos).map((key) =>
-            <View key={key}>
-              <TodoListItem title={todos[key].title} isChecked={todos[key].isChecked} onItemPressed={() => this.onItemPressed(todos[key])} shouldShowDeleteButton={this.state.shouldShowDeleteButton} onDeleteItemPressed={() => this.onDeleteItemPressed(todos[key])} />
-              <Divider />
-            </View>
-          )}
-          {this.renderForm()}
-        </View>
+        <ScrollView ref="scrollView">
+          <View style={styles.listContainer}>
+            {!isEmpty(todos) && Object.keys(todos).map((key) =>
+              <View key={key}>
+                <TodoListItem title={todos[key].title} isChecked={todos[key].isChecked} onItemPressed={() => this.onItemPressed(todos[key])} shouldShowDeleteButton={this.state.shouldShowDeleteButton} onDeleteItemPressed={() => this.onDeleteItemPressed(todos[key])} />
+                <Divider />
+              </View>
+            )}
+            {this.renderForm()}
+          </View>
+          {Platform.OS === 'ios' && <KeyboardSpacer />}
+        </ScrollView>
       </View>
     );
   }

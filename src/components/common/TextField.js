@@ -4,6 +4,7 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Divider from './Divider';
@@ -13,6 +14,8 @@ type Props = {
   name: String,
   meta: Object,
   onInputBlur: Function,
+  onInputFocus: Function,
+  onTextEndEditing: Function,
 }
 
 class TextField extends Component {
@@ -39,8 +42,18 @@ class TextField extends Component {
     }
   }
 
+  onKeyPress(event, name) {
+    const { onTextEndEditing } = this.props;
+    console.log('onKeyPress key: ' + event.nativeEvent.key);
+    if (Platform.OS === 'android') {
+      if (event.nativeEvent.key === 'Enter') {
+        onTextEndEditing(name);
+      }
+    }
+  }
+
   render() {
-    const { input: { onChange, value }, name } = this.props;
+    const { input: { onChange, value }, name, onInputFocus, onTextEndEditing } = this.props;
     return (
       <View>
         <TouchableOpacity style={styles.row} onPress={() => this.focusInput(name)}>
@@ -49,11 +62,16 @@ class TextField extends Component {
             ref={name}
             style={styles.input}
             value={value}
-            onFocus={() => this.setState({ isFocused: true })}
+            onFocus={() => {
+              this.setState({ isFocused: true });
+              onInputFocus(this);
+            }}
+            onSubmitEditing={() => onTextEndEditing(name)}
             onBlur={() => this.setState({ isFocused: false })}
             onChangeText={(text) => onChange(text)}
             underlineColorAndroid="transparent"
             placeholderTextColor="#aaa"
+            onEndEditing={() => onTextEndEditing(name)}
             {...this.props}
           />
           {this.state.isFocused && <TouchableOpacity style={styles.cancelIcon} onPress={() => this.blurInput(name)}>
@@ -76,6 +94,8 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     paddingLeft: 10,
+    paddingTop: 0,
+    paddingBottom: 0,
     fontSize: 12,
     color: '#333',
   },
