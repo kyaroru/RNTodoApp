@@ -1,5 +1,5 @@
 #!/bin/sh
-cd ~/documents/React/RNTodoApp
+cd ~/documents/Personal/React/RNTodoApp
 echo "Pulling from RNTodoApp"
 git pull
 echo "Bundle RNTodoApp for Release"
