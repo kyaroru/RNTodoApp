@@ -19,7 +19,7 @@ import TextField from '../common/TextField';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 type Props = {
-  fetchTodosRequest: Function,
+  initializeTodos: Function,
   todos: Object,
   isFetching: bool,
   toggleTodoItem: Function,
@@ -45,7 +45,7 @@ class TodoList extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchTodosRequest();
+    this.props.initializeTodos();
   }
 
   onItemPressed(item) {
@@ -163,7 +163,7 @@ const mapStateToProps = (store) => ({
 });
 
 const mapDispatchToProps = {
-  fetchTodosRequest: ducks.fetchTodosRequest,
+  initializeTodos: ducks.initializeTodos,
   addTodoItem: ducks.addTodoItem,
   toggleTodoItem: ducks.toggleTodoItem,
   deleteTodoItem: ducks.deleteTodoItem,

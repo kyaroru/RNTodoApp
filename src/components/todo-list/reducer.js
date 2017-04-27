@@ -4,33 +4,19 @@ import isEmpty from 'lodash/isEmpty';
 
 const todoIsFetching = (state = false, action) => {
   switch (action.type) {
-    case ducks.FETCH_TODOS_REQUEST:
+    case ducks.INITIALIZE_TODOS:
       return true;
-    case ducks.FETCH_TODOS_SUCCESS:
+    case ducks.INITIALIZE_TODOS_SUCCESS:
       return false;
     default:
       return state;
   }
 };
 
-const reduce = (array, reduceFunc, initValue) => {
-  let nextValue = initValue;
-  for (let i = 0; i < array.length; i++) {
-    const item = array[i];
-    nextValue = reduceFunc(nextValue, item, i);
-  }
-  return nextValue;
-};
-
 const todoList = (state = {}, action) => {
   switch (action.type) {
-    case ducks.FETCH_TODOS_REQUEST:
-      return {};
-    case ducks.FETCH_TODOS_SUCCESS:
-      return reduce(action.todos, (obj, todo) => {
-        obj[todo.id] = todo;
-        return obj;
-      }, {});
+    case ducks.INITIALIZE_TODOS_SUCCESS:
+      return action.todos;
     case ducks.TOGGLE_TODO_ITEM: {
       return {
         ...state,
@@ -61,33 +47,6 @@ const todoList = (state = {}, action) => {
       return state;
   }
 };
-
-// const todoList = (state = [], action) => {
-//   switch (action.type) {
-//     case ducks.FETCH_TODOS_REQUEST:
-//       return [];
-//     case ducks.FETCH_TODOS_SUCCESS:
-//       return action.todos;
-//     case ducks.UPDATE_TODO_ITEM: {
-//       const index = state.findIndex((x) => x.id === action.todo.id);
-//       return state.map((item, i) => {
-//         if (i === index) {
-//           return action.todo;
-//         }
-//         return item;
-//       });
-//     }
-//     case ducks.DELETE_TODO_ITEM: {
-//       const index = state.findIndex((x) => x.id === action.todo.id);
-//       return [
-//         ...state.slice(0, index),
-//         ...state.slice(index + 1),
-//       ];
-//     }
-//     default:
-//       return state;
-//   }
-// };
 
 export default combineReducers({
   todoList,

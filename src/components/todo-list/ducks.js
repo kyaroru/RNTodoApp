@@ -1,14 +1,14 @@
 
 export const NAME = 'TODOS';
 
-export const FETCH_TODOS_REQUEST = `${NAME}/FETCH_TODOS_REQUEST`;
-export const fetchTodosRequest = () => ({
-  type: FETCH_TODOS_REQUEST,
+export const INITIALIZE_TODOS = `${NAME}/INITIALIZE_TODOS`;
+export const initializeTodos = () => ({
+  type: INITIALIZE_TODOS,
 });
 
-export const FETCH_TODOS_SUCCESS = `${NAME}/FETCH_TODOS_SUCCESS`;
-export const fetchTodosSuccess = (todos) => ({
-  type: FETCH_TODOS_SUCCESS,
+export const INITIALIZE_TODOS_SUCCESS = `${NAME}/INITIALIZE_TODOS_SUCCESS`;
+export const initializeTodosSuccess = (todos) => ({
+  type: INITIALIZE_TODOS_SUCCESS,
   todos,
 });
 
@@ -29,3 +29,5 @@ export const deleteTodoItem = (todo) => ({
   type: DELETE_TODO_ITEM,
   todo,
 });
+
+export const getTodos = (state) => state[NAME].todoList;
