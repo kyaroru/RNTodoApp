@@ -5,42 +5,42 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: Verifying required fastlane version" time="0.005671">
+      <testcase classname="fastlane.lanes" name="0: Verifying required fastlane version" time="0.003945">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: default_platform" time="0.00228">
+      <testcase classname="fastlane.lanes" name="1: default_platform" time="0.003208">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: Switch to android bump_version_code lane" time="0.004746">
+      <testcase classname="fastlane.lanes" name="2: Switch to android bump_version_code lane" time="0.003132">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: Switch to android input_version_name lane" time="0.013959">
+      <testcase classname="fastlane.lanes" name="3: Switch to android input_version_name lane" time="0.003108">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: prompt" time="2.910235">
+      <testcase classname="fastlane.lanes" name="4: prompt" time="5.059276">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="5: gradle" time="142.401011">
+      <testcase classname="fastlane.lanes" name="5: gradle" time="181.531279">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="6: supply" time="21.947557">
+      <testcase classname="fastlane.lanes" name="6: supply" time="24.641789">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="7: notification" time="0.303954">
+      <testcase classname="fastlane.lanes" name="7: notification" time="0.208117">
         
       </testcase>
     
