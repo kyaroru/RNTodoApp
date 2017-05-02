@@ -111,7 +111,7 @@ class TodoList extends Component {
           style={styles.centering}
           size="large"
         />
-        <NavigationHeader title="TodoApp" rightIcon="delete-sweep" onRightIconPressed={() => this.onDeletePressed()} />
+        <NavigationHeader title="RNTodoApp" rightIcon="delete-sweep" onRightIconPressed={() => this.onDeletePressed()} />
         <ScrollView ref="scrollView">
           <View style={styles.listContainer}>
             {!isEmpty(todos) && Object.keys(todos).map((key) =>
