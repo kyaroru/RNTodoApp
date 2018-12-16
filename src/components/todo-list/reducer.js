@@ -48,7 +48,17 @@ const todoList = (state = {}, action) => {
   }
 };
 
+const deleteMode = (state = { isDeleteModeOn: false }, action) => {
+  switch (action.type) {
+    case ducks.TOGGLE_DELETE_MODE:
+      return { isDeleteModeOn: !state.isDeleteModeOn };
+    default:
+      return state;
+  }
+};
+
 export default combineReducers({
+  deleteMode,
   todoList,
   todoIsFetching,
 });

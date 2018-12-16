@@ -8,7 +8,8 @@ import ReactNative, {
   Platform,
   StatusBar,
 } from 'react-native';
-import NavigationHeader from '../common/NavigationHeader';
+import { getNavigationOptionsWithAction } from 'themes/appStyles';
+import * as Colors from 'themes/colors';
 import TodoListItem from '../common/TodoListItem';
 import Divider from '../common/Divider';
 import * as ducks from './ducks';
@@ -17,6 +18,7 @@ import isEmpty from 'lodash/isEmpty';
 import { Field, reduxForm, formValueSelector, change } from 'redux-form';
 import TextField from '../common/TextField';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+import ToggleDeleteButton from './ToggleDeleteButton';
 
 type Props = {
   initializeTodos: Function,
@@ -36,12 +38,8 @@ class TodoList extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      shouldShowDeleteButton: false,
-    };
     this.onInputFocus = this.onInputFocus.bind(this);
     this.onTextEndEditing = this.onTextEndEditing.bind(this);
-    this.onBlur = this.onBlur.bind(this);
   }
 
   componentDidMount() {
@@ -52,24 +50,15 @@ class TodoList extends Component {
     this.props.toggleTodoItem(item);
   }
 
-  onDeletePressed() {
-    this.setState({ shouldShowDeleteButton: !this.state.shouldShowDeleteButton });
-  }
-
   onDeleteItemPressed(item) {
     this.props.deleteTodoItem(item);
   }
 
-  onTextEndEditing(model) {
-    const { formData } = this.props;
-    if (formData[model]) {
-      this.props.addTodoItem(formData[model]);
-      this.updateFormDataByName(model, '');
+  onTextEndEditing() {
+    const { todoValue } = this.props;
+    if (todoValue) {
+      this.props.addTodoItem(todoValue);
     }
-  }
-
-  onBlur(name) {
-    this.updateFormDataByName(name, '');
   }
 
   onInputFocus(model) {
@@ -85,14 +74,14 @@ class TodoList extends Component {
     }
   }
 
-  updateFormDataByName(name, value) {
-    this.props.updateFormData('todoForm', name, value);
+  updateTodoFormValue(value) {
+    this.props.updateFormData('todoForm', 'todoValue', value);
   }
 
   renderForm() {
     return (
       <View>
-        <Field name="todoValue" component={TextField} placeholder="Enter new todo here" secureTextEntry={false} editable onTextEndEditing={this.onTextEndEditing} onBlur={this.onBlur} onInputFocus={this.onInputFocus} />
+        <Field name="todoValue" component={TextField} placeholder="Enter new todo here" editable onTextEndEditing={this.onTextEndEditing} onInputFocus={this.onInputFocus} />
       </View>
     );
   }
@@ -111,12 +100,11 @@ class TodoList extends Component {
           style={styles.centering}
           size="large"
         />
-        <NavigationHeader title="TodoApp" rightIcon="delete-sweep" onRightIconPressed={() => this.onDeletePressed()} />
         <ScrollView ref="scrollView">
           <View style={styles.listContainer}>
             {!isEmpty(todos) && Object.keys(todos).map((key) =>
               <View key={key}>
-                <TodoListItem title={todos[key].title} isChecked={todos[key].isChecked} onItemPressed={() => this.onItemPressed(todos[key])} shouldShowDeleteButton={this.state.shouldShowDeleteButton} onDeleteItemPressed={() => this.onDeleteItemPressed(todos[key])} />
+                <TodoListItem title={todos[key].title} isChecked={todos[key].isChecked} onItemPressed={() => this.onItemPressed(todos[key])} shouldShowDeleteButton={this.props.isDeleteModeOn} onDeleteItemPressed={() => this.onDeleteItemPressed(todos[key])} />
                 <Divider />
               </View>
             )}
@@ -159,7 +147,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = (store) => ({
   isFetching: store[ducks.NAME].todoIsFetching,
   todos: store[ducks.NAME].todoList,
-  formData: selector(store, 'todoValue', 'anotherInput'),
+  isDeleteModeOn: store[ducks.NAME].deleteMode.isDeleteModeOn,
+  todoValue: selector(store, 'todoValue'),
 });
 
 const mapDispatchToProps = {
@@ -169,6 +158,8 @@ const mapDispatchToProps = {
   deleteTodoItem: ducks.deleteTodoItem,
   updateFormData: change,
 };
+
+TodoList.navigationOptions = getNavigationOptionsWithAction('RNTodoApp', Colors.primary, Colors.white, null, <ToggleDeleteButton />);
 
 const TodoPage = connect(mapStateToProps, mapDispatchToProps)(reduxForm({
   form: 'todoForm',

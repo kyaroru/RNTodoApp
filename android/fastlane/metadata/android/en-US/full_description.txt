@@ -1,0 +1,12 @@
+A simple todo app created using pure React Native (v0.57.8) + Redux Saga + CodePush
+
+Features:
+- Add new todo item
+- Remove existing todo item
+- Mark todo as done
+- Able to save todos into device
+
+Upcoming features:
+- Able to archive? :p
+
+Git Repo: https://github.com/kyaroru/RNTodoApp

@@ -1,8 +1,11 @@
 package com.rntodoapp;
 
+import android.os.Bundle;
+import android.util.Log;
+
 import com.facebook.react.ReactActivity;
-import com.microsoft.codepush.react.CodePush;
-import com.oblador.vectoricons.VectorIconsPackage;
+
+import org.devio.rn.splashscreen.SplashScreen;
 
 public class MainActivity extends ReactActivity {
 
@@ -13,5 +16,12 @@ public class MainActivity extends ReactActivity {
     @Override
     protected String getMainComponentName() {
         return "RNTodoApp";
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        SplashScreen.show(this);
+        Log.i("ReactNativeJS", "******** Code Push Key: " + BuildConfig.CODEPUSH_KEY);
+        super.onCreate(savedInstanceState);
     }
 }

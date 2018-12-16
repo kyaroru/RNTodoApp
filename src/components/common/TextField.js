@@ -13,7 +13,7 @@ type Props = {
   input: Object,
   name: String,
   meta: Object,
-  onBlur: Function,
+  clearInput: Function,
   onInputFocus: Function,
   onTextEndEditing: Function,
 }
@@ -26,32 +26,38 @@ class TextField extends Component {
     this.state = {
       isFocused: false,
     };
-    this.blurInput = this.blurInput.bind(this);
   }
 
-  blurInput(name) {
-    const { onBlur } = this.props;
-    if (this.refs[name]) {
-      onBlur(name);
+  onSubmitEditing = (data) => {
+    const { onTextEndEditing } = this.props;
+    onTextEndEditing();
+    setTimeout(() => {
+      this.clearInput();
+    })
+  }
+
+  clearInput = () => {
+    const { input: { onChange } } = this.props;
+    if (this.input) {
       this.setState({ isFocused: false });
-      this.refs[name].blur();
+      this.input.setNativeProps({ text: '' })
     }
   }
 
-  focusInput(name) {
-    if (this.refs[name]) {
-      this.refs[name].focus();
+  focusInput = () => {
+    if (this.input) {
+      this.input.focus();
     }
   }
 
   render() {
-    const { input: { onChange, value }, name, onInputFocus, onTextEndEditing } = this.props;
+    const { input: { onChange, value, onBlur }, onInputFocus } = this.props;
     return (
       <View>
-        <View style={styles.row} onPress={() => this.focusInput(name)} >
+        <View style={styles.row} onPress={() => this.focusInput()} >
           <Icon name="check-box-outline-blank" size={25} color="rgb(9, 142, 206)" />
           <TextInput
-            ref={name}
+            ref={ref => { this.input = ref; }}
             style={styles.input}
             value={value}
             onFocus={() => {
@@ -61,10 +67,10 @@ class TextField extends Component {
             onChangeText={(text) => onChange(text)}
             underlineColorAndroid="transparent"
             placeholderTextColor="#aaa"
-            onSubmitEditing={() => onTextEndEditing(name)}
+            onSubmitEditing={this.onSubmitEditing}
             {...this.props}
           />
-          {this.state.isFocused && <TouchableOpacity style={styles.cancelIcon} onPress={() => this.blurInput(name)}>
+          {this.state.isFocused && <TouchableOpacity style={styles.cancelIcon} onPress={() => this.clearInput()}>
             <Icon name="cancel" size={25} color="#777" />
           </TouchableOpacity>}
         </View>

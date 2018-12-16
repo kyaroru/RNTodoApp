@@ -1,6 +1,5 @@
-import { takeLatest } from 'redux-saga';
 import * as ducks from './ducks';
-import { put, fork, select } from 'redux-saga/effects';
+import { all, put, fork, select, takeLatest } from 'redux-saga/effects';
 import { AsyncStorage } from 'react-native';
 
 function* initializeTodos() {
@@ -18,7 +17,7 @@ function* initializeTodos() {
 }
 
 function* watchInitializeTodos() {
-  yield* takeLatest(ducks.INITIALIZE_TODOS, initializeTodos);
+  yield takeLatest(ducks.INITIALIZE_TODOS, initializeTodos);
 }
 
 function* updateTodos() {
@@ -33,22 +32,22 @@ function* updateTodos() {
 }
 
 function* watchAddTodoItem() {
-  yield* takeLatest(ducks.ADD_TODO_ITEM, updateTodos);
+  yield takeLatest(ducks.ADD_TODO_ITEM, updateTodos);
 }
 
 function* watchDeleteTodoItem() {
-  yield* takeLatest(ducks.DELETE_TODO_ITEM, updateTodos);
+  yield takeLatest(ducks.DELETE_TODO_ITEM, updateTodos);
 }
 
 function* watchToggleTodoItem() {
-  yield* takeLatest(ducks.TOGGLE_TODO_ITEM, updateTodos);
+  yield takeLatest(ducks.TOGGLE_TODO_ITEM, updateTodos);
 }
 
 export default function* todoSaga() {
-  yield [
+  yield all([
     fork(watchAddTodoItem),
     fork(watchDeleteTodoItem),
     fork(watchToggleTodoItem),
     fork(watchInitializeTodos),
-  ];
+  ]);
 }

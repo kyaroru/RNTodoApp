@@ -12,6 +12,11 @@ export const initializeTodosSuccess = (todos) => ({
   todos,
 });
 
+export const TOGGLE_DELETE_MODE = 'TOGGLE_DELETE_MODE';
+export const toggleDeleteMode = () => ({
+  type: TOGGLE_DELETE_MODE,
+});
+
 export const TOGGLE_TODO_ITEM = `${NAME}/TOGGLE_TODO_ITEM`;
 export const toggleTodoItem = (todo) => ({
   type: TOGGLE_TODO_ITEM,

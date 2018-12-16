@@ -1,17 +1,23 @@
-// @flow
-import React, { Component } from 'react';
-import TodoList from './components/todo-list/TodoList';
-import createStore from './createStore';
-import createReducers from './ducks';
+import React from 'react';
+import SplashScreen from 'react-native-splash-screen';
 import { Provider } from 'react-redux';
+import createStore from './createStore';
+import App from './app';
 
-export default class Main extends Component {
+class Main extends React.Component {
+  componentWillMount() {
+    SplashScreen.hide();
+  }
+
   render() {
-    const store = createStore(createReducers());
+    const store = createStore();
+
     return (
       <Provider store={store}>
-        <TodoList />
+        <App />
       </Provider>
     );
   }
 }
+
+export default Main;

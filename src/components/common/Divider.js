@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   View,
 } from 'react-native';
@@ -24,7 +25,7 @@ const Divider = (props) => (
 );
 
 Divider.propTypes = {
-  large: React.PropTypes.bool,
+  large: PropTypes.bool,
 };
 
 export default Divider;
